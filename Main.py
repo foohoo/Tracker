@@ -55,9 +55,26 @@ def check_direction(key, current_direction):
 
     return current_direction
 
+
+def check_collision():
+    if playery < 0 or playery > WIN_HEIGHT:
+        return True
+
+    if playerx < 0 or playerx > WIN_WIDTH:
+        return True
+
+    return False
+
 while True:
 
     playerx, playery = move_player(playerx, playery, direction)
+
+    print (playery)
+
+    if check_collision():
+        pygame.quit()
+        sys.exit()
+
 
     for event in pygame.event.get():
         if event.type == KEYDOWN:
