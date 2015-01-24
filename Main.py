@@ -3,50 +3,65 @@ __author__ = 'Baron'
 import pygame, sys
 from pygame.locals import *
 
+pygame.init()
+pygame.display.set_caption('Tracker')
+
+#Set Constants
 WIN_WIDTH = 900
 WIN_HEIGHT = 600
-
-pygame.init()
-
-FPS = 150
-fpsClock = pygame.time.Clock()
-
-DISPLAYSURF = pygame.display.set_mode((900, 600))
 DARKBLUE = (0, 25, 82)
 RED = (255, 0, 0)
+#End Constants
 
+#Setup game surface
+DISPLAYSURF = pygame.display.set_mode((900, 600))
+DISPLAYSURF.fill(DARKBLUE)
+FPS = 150
+fpsClock = pygame.time.Clock()
+#End setup game surface
+
+#global variables
 direction = 'right'
-
 playerx = 10
 playery = WIN_HEIGHT/2
+#end global variables
 
 player = pygame.draw.rect(DISPLAYSURF, RED, (playerx, playery, 10, 10))
 
 
-DISPLAYSURF.fill(DARKBLUE)
+def move_player(x, y, move_direction):
+    if move_direction == 'right':
+        x += 1
+    elif move_direction == 'up':
+        y += -1
+    elif move_direction == 'down':
+        y += 1
+    else:
+        x += 1
+    return x, y
 
-pygame.display.set_caption('Tracker')
+
+def check_direction(key, current_direction):
+    if key == K_DOWN:
+        if current_direction != 'up':
+            return 'down'
+
+    if key == K_RIGHT:
+        return 'right'
+
+    if key == K_UP:
+        if current_direction != 'down':
+            return 'up'
+
+    return current_direction
+
 while True:
 
-    if direction == 'right':
-        playerx += 1
-    elif direction == 'up':
-        playery += -1
-    elif direction == 'down':
-        playery += 1
-    else:
-        playerx += 1
+    playerx, playery = move_player(playerx, playery, direction)
 
     for event in pygame.event.get():
         if event.type == KEYDOWN:
-            if event.key == K_DOWN:
-                if direction != 'up':
-                    direction = 'down'
-            elif event.key == K_RIGHT:
-                direction = 'right'
-            elif event.key == K_UP:
-                if direction != 'down':
-                    direction = 'up'
+            direction = check_direction(event.key, direction)
 
         if event.type == QUIT:
             pygame.quit()
