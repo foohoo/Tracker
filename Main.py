@@ -4,6 +4,7 @@ import pygame, sys, Tracker, glob
 from pygame.locals import *
 from Tracker import *
 
+pygame.mixer.pre_init(44100, 16, 2, 4096) #frequency, size, channels, buffersize
 pygame.init()
 pygame.display.set_caption('Tracker')
 
@@ -56,10 +57,14 @@ DISPLAYSURF = pygame.display.set_mode((900, 600))
 DISPLAYSURF.fill(BLACK)
 FPS = 150
 fpsClock = pygame.time.Clock()
+turn = pygame.mixer.Sound('turn1.wav')
+boom = pygame.mixer.Sound('system_shutdown.wav')
+complete = pygame.mixer.Sound('complete.wav')
+background = pygame.mixer.music.load('background.wav')
 #End setup game surface
 
 #global variables
-fontObj = pygame.font.Font('freesansbold.ttf', 95)
+fontObj = pygame.font.Font('TRON.ttf', 80)
 levelNo = 0
 levels = get_levels()
 #end global variables
@@ -68,14 +73,17 @@ level = draw_level(levelNo)
 
 tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, level.starty-8)
 pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
+pygame.mixer.music.play(-1, 0.0)
 
 while True:
+
     while not tracker.dead and not tracker.win:
 
         tracker.move_player()
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
+                turn.play()
                 tracker.check_direction(event.key)
 
                 if event.key == K_ESCAPE:
@@ -87,15 +95,17 @@ while True:
                 sys.exit()
 
         pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
-        tracker.check_collision(level.walls, level.end_rect1, level.end_rect2)
+        tracker.check_collision(level.walls)
 
         pygame.display.update()
         fpsClock.tick(FPS)
 
     #game has ended
     if tracker.dead:
+        boom.play()
         display_message('Game Over!')
     else:
+        complete.play()
         display_message('Complete!')
         levelNo += 1
 
