@@ -4,25 +4,30 @@ import pygame, sys
 from pygame.locals import *
 
 
+class Player():
+
+    def __init__(self, x, y):
+        self.rect = pygame.Rect(x, y, 16, 16)
+
+
 class Tracker():
 
-    def __init__(self, win_height, win_width):
+    def __init__(self, win_height, win_width, starty):
         self.direction = 'right'
-        self.playerx = 10
-        self.playery = win_height/2
+        self.player = Player(10, starty)
         self.win_height = win_height
         self.win_width = win_width
         self.gameEnded = False
 
     def move_player(self):
         if self.direction == 'right':
-            self.playerx += 1
+            self.player.rect.x += 1
         elif self.direction == 'up':
-            self.playery += -1
+            self.player.rect.y += -1
         elif self.direction == 'down':
-            self.playery += 1
+            self.player.rect.y += 1
         else:
-            self.playerx += 1
+            self.player.rect.x += 1
 
         return
 
@@ -40,11 +45,18 @@ class Tracker():
 
         return
 
-    def check_collision(self):
-        if self.playery < 0 or self.playery > self.win_height:
+    def check_collision(self, walls, endrect1, endrect2):
+        if self.player.rect.y < 0 or self.player.rect.y > self.win_height:
             self.gameEnded = True
 
-        if self.playerx < 0 or self.playerx > self.win_width:
+        if self.player.rect.x < 0 or self.player.rect.x > self.win_width:
+            self.gameEnded = True
+
+        for wall in walls:
+            if self.player.rect.colliderect(wall.rect):
+                self.gameEnded = True
+
+        if self.player.rect.colliderect(endrect1) or self.player.rect.colliderect(endrect2):
             self.gameEnded = True
 
         return
