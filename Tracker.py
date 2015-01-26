@@ -28,7 +28,7 @@ class Level():
 class Player():
 
     def __init__(self, x, y):
-        self.rect = pygame.Rect(x, y, 16, 16)
+        self.rect = pygame.Rect(x, y, 12, 12)
 
 
 class Tracker():

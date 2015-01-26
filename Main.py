@@ -1,6 +1,6 @@
 __author__ = 'Baron'
 
-import pygame, sys, Tracker, glob
+import pygame, sys, Tracker, glob, time
 from pygame.locals import *
 from Tracker import *
 
@@ -75,6 +75,9 @@ tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, level.starty-8)
 pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
 pygame.mixer.music.play(-1, 0.0)
 
+pygame.display.update()
+time.sleep(1.5)
+
 while True:
 
     while not tracker.dead and not tracker.win:
@@ -120,6 +123,9 @@ while True:
                         DISPLAYSURF.fill(BLACK)
                         level = draw_level(levelNo)
                         tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, level.starty-8)
+
+                        pygame.display.update()
+                        time.sleep(1.5)
 
         pygame.display.update()
         fpsClock.tick(FPS)
