@@ -26,7 +26,7 @@ def draw_level(levelNo):
 
 def get_levels():
     levels = []
-    map_files = glob.iglob("./*.txt")
+    map_files = glob.iglob("./Levels/*.txt")
 
     for map_file in map_files:
         with open(map_file) as level_txt:
@@ -57,10 +57,10 @@ DISPLAYSURF = pygame.display.set_mode((900, 600))
 DISPLAYSURF.fill(BLACK)
 FPS = 150
 fpsClock = pygame.time.Clock()
-turn = pygame.mixer.Sound('turn1.wav')
-boom = pygame.mixer.Sound('system_shutdown.wav')
-complete = pygame.mixer.Sound('complete.wav')
-background = pygame.mixer.music.load('background.wav')
+turn = pygame.mixer.Sound('./Sounds/turn1.wav')
+boom = pygame.mixer.Sound('./Sounds/system_shutdown.wav')
+complete = pygame.mixer.Sound('./Sounds/complete.wav')
+background = pygame.mixer.music.load('./Sounds/background.wav')
 #End setup game surface
 
 #global variables
