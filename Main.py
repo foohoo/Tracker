@@ -1,8 +1,9 @@
 __author__ = 'Baron'
 
-import pygame, sys, Tracker, glob, time
+import pygame, sys, Tracker, glob, time, LevelGenerator
 from pygame.locals import *
 from Tracker import *
+from LevelGenerator import *
 
 pygame.mixer.pre_init(44100, 16, 2, 4096) #frequency, size, channels, buffersize
 pygame.init()
@@ -22,6 +23,10 @@ def draw_level(levelNo):
         pygame.draw.rect(DISPLAYSURF, TRONBLUEDARK, wall)
 
     return level
+
+def draw_generated_level(gen_level):
+    for wall in gen_level.walls:
+        pygame.draw.rect(DISPLAYSURF, TRONBLUEDARK, wall)
 
 
 def get_levels():
@@ -69,7 +74,9 @@ levelNo = 0
 levels = get_levels()
 #end global variables
 
-level = draw_level(levelNo)
+# level = draw_level(levelNo)
+level = Level(generate_level())
+draw_generated_level(level)
 
 tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, level.starty-8)
 pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
@@ -121,7 +128,9 @@ while True:
 
                     if event.key == K_RETURN:
                         DISPLAYSURF.fill(BLACK)
-                        level = draw_level(levelNo)
+                        # level = draw_level(levelNo)
+                        level = Level(generate_level())
+                        draw_generated_level(level)
                         tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, level.starty-8)
 
                         pygame.display.update()
