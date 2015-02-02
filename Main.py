@@ -17,14 +17,6 @@ def display_message(text):
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
 
-def draw_level(levelNo):
-    level = Level(levels[levelNo])
-    for wall in level.walls:
-        pygame.draw.rect(DISPLAYSURF, TRONBLUEDARK, wall)
-
-    return level
-
-
 def draw_generated_level(gen_level):
     for wall in gen_level.walls:
         pygame.draw.rect(DISPLAYSURF, TRONBLUEDARK, wall)
