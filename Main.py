@@ -10,16 +10,21 @@ pygame.init()
 pygame.display.set_caption('Tracker')
 DISPLAYSURF = pygame.display.set_mode((900, 600))
 
-def display_message(text):
-    textSurfaceObj = fontObj.render(text, True, TRONBLUELIGHT, BLACK)
+
+def display_message(text, x, y, font):
+    textSurfaceObj = font.render(text, True, TRONBLUELIGHT, BLACK)
     textRectObj = textSurfaceObj.get_rect()
-    textRectObj.center = (WIN_WIDTH / 2, WIN_HEIGHT / 2)
+    textRectObj.center = (x, y)
     DISPLAYSURF.blit(textSurfaceObj, textRectObj)
 
 
 def draw_generated_level(gen_level):
     for wall in gen_level.walls:
         pygame.draw.rect(DISPLAYSURF, TRONBLUEDARK, wall)
+
+
+def draw_scoreboard(score, lives):
+    display_message("SCORE: "+ str(score) + "    LIVES: " + str(lives), 260, 20, smallFont)
 
 
 def get_levels():
@@ -38,11 +43,15 @@ def get_levels():
 
 
 def start_level():
+    global tracker
     DISPLAYSURF.fill(BLACK)
     new_level = Level(generate_level())
     draw_generated_level(new_level)
+    draw_scoreboard(score, lives)
     new_tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, new_level.starty-8)
+
     return new_level, new_tracker
+
 
 #Set Constants
 WIN_WIDTH = 912
@@ -63,7 +72,10 @@ pygame.mixer.music.play(-1, 0.0)
 #End setup game surface
 
 #global variables
-fontObj = pygame.font.Font('TRON.ttf', 80)
+largeFont = pygame.font.Font('TRON.ttf', 80)
+smallFont = pygame.font.Font('IRRESIST.ttf', 40)
+score = 0
+lives = 3
 #end global variables
 
 level, tracker = start_level()
@@ -90,10 +102,16 @@ while True:
 
         if tracker.dead:
             boom.play()
-            display_message('Game Over!')
+            lives -= 1
+            if lives < 0:
+                display_message("""Game Over!""", WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
+                lives = 3
+                score = 0
+
         elif tracker.win:
             complete.play()
-            display_message('Complete!')
+            display_message('Complete!', WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
+            score += 1
         else:
             pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
 

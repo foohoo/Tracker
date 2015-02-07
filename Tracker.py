@@ -69,11 +69,11 @@ class Tracker():
 
     def check_collision(self, walls):
         if self.player.rect.y < 0 or self.player.rect.y > self.win_height:
-            self.dead = True
+                self.dead = True
 
         for wall in walls:
             if self.player.rect.colliderect(wall):
-                self.dead = True
+                    self.dead = True
 
         if self.player.rect.x > self.win_width - 48:
             self.win = True
