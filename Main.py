@@ -42,15 +42,33 @@ def get_levels():
     return levels
 
 
-def start_level():
+def start_level(last_level):
     global tracker
     DISPLAYSURF.fill(BLACK)
-    new_level = Level(generate_level())
+
+    if last_level is None:
+        new_level = Level(generate_level())
+    else:
+        new_level = last_level
+
     draw_generated_level(new_level)
     draw_scoreboard(score, lives)
     new_tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, new_level.starty-8)
 
     return new_level, new_tracker
+
+
+def flash_player():
+    count = 0
+    while count < 10:
+        if count % 2 == 0:
+            pygame.draw.rect(DISPLAYSURF, BLACK, tracker.player)
+        else:
+            pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
+        pygame.display.update()
+        time.sleep(0.1)
+
+        count += 1
 
 
 #Set Constants
@@ -59,6 +77,7 @@ WIN_HEIGHT = 608
 BLACK = (5, 13, 16)
 TRONBLUEDARK = (52, 96, 141)
 TRONBLUELIGHT = (24, 202, 230)
+WHITE = (255, 255, 255)
 #End Constants
 
 #Setup game surface
@@ -78,7 +97,12 @@ score = 0
 lives = 3
 #end global variables
 
-level, tracker = start_level()
+level, tracker = start_level(None)
+
+
+def direction_key(key):
+    return key == K_UP or key == K_DOWN or key == K_RIGHT
+
 
 while True:
 
@@ -86,8 +110,10 @@ while True:
 
         for event in pygame.event.get():
             if event.type == KEYDOWN:
-                turn.play()
-                tracker.check_direction(event.key)
+                if direction_key(event.key):
+                    turn.play()
+                    tracker.check_direction(event.key)
+                    break
 
                 if event.key == K_ESCAPE:
                     pygame.quit()
@@ -97,11 +123,11 @@ while True:
                 pygame.quit()
                 sys.exit()
 
-        tracker.move_player()
         tracker.check_collision(level.walls)
 
         if tracker.dead:
             boom.play()
+            flash_player()
             lives -= 1
             if lives < 0:
                 display_message("""Game Over!""", WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
@@ -113,6 +139,7 @@ while True:
             display_message('Complete!', WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
             score += 1
         else:
+            tracker.move_player()
             pygame.draw.rect(DISPLAYSURF, TRONBLUELIGHT, tracker.player)
 
         pygame.display.update()
@@ -126,9 +153,12 @@ while True:
                 if event.key == K_ESCAPE:
                     pygame.quit()
                     sys.exit()
-
-                if event.key == K_RETURN:
-                    level, tracker = start_level()
+                else:
+                    clear = True
+                    if tracker.dead and lives < 3:
+                        level, tracker = start_level(level)
+                    else:
+                        level, tracker = start_level(None)
                     pygame.display.update()
                     time.sleep(1.5)
-
+                    break
