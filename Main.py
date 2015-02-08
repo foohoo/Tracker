@@ -55,7 +55,14 @@ def start_level(last_level):
     draw_scoreboard(score, lives)
     new_tracker = Tracker(WIN_HEIGHT, WIN_WIDTH, new_level.starty-8)
 
+    pygame.display.update()
+    time.sleep(1.5)
+
     return new_level, new_tracker
+
+
+def direction_key(key):
+    return key == K_UP or key == K_DOWN or key == K_RIGHT
 
 
 def flash_player():
@@ -99,15 +106,9 @@ lives = 3
 
 level, tracker = start_level(None)
 
-
-def direction_key(key):
-    return key == K_UP or key == K_DOWN or key == K_RIGHT
-
-
 while True:
 
     while not tracker.dead and not tracker.win:
-
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if direction_key(event.key):
@@ -128,12 +129,12 @@ while True:
         if tracker.dead:
             boom.play()
             flash_player()
+            pygame.event.clear()
             lives -= 1
             if lives < 0:
                 display_message("""Game Over!""", WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
                 lives = 3
                 score = 0
-
         elif tracker.win:
             complete.play()
             display_message('Complete!', WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
@@ -154,11 +155,8 @@ while True:
                     pygame.quit()
                     sys.exit()
                 else:
-                    clear = True
                     if tracker.dead and lives < 3:
                         level, tracker = start_level(level)
                     else:
                         level, tracker = start_level(None)
-                    pygame.display.update()
-                    time.sleep(1.5)
                     break
