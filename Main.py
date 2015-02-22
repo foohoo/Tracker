@@ -1,9 +1,10 @@
 __author__ = 'Baron'
 
-import pygame, sys, Tracker, glob, time, LevelGenerator
+import pygame, sys, Tracker, glob, time, LevelGenerator, Intro
 from pygame.locals import *
 from Tracker import *
 from LevelGenerator import *
+from Intro import *
 
 pygame.mixer.pre_init(44100, 16, 2, 4096) #frequency, size, channels, buffersize
 pygame.init()
@@ -104,6 +105,8 @@ score = 0
 lives = 3
 #end global variables
 
+Intro.start(DISPLAYSURF)
+
 level, tracker = start_level(None)
 
 while True:
@@ -133,8 +136,6 @@ while True:
             lives -= 1
             if lives < 0:
                 display_message("""Game Over!""", WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
-                lives = 3
-                score = 0
         elif tracker.win:
             complete.play()
             display_message('Complete!', WIN_WIDTH/2, WIN_HEIGHT/2, largeFont)
@@ -156,6 +157,10 @@ while True:
                     sys.exit()
                 else:
                     if tracker.dead and lives < 3:
+                        if lives < 0:
+                            lives = 3
+                            score = 0
+                            Intro.start(DISPLAYSURF)
                         level, tracker = start_level(level)
                     else:
                         level, tracker = start_level(None)
